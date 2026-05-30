@@ -5,7 +5,6 @@ const User = require('./models/User');
 const MembershipPlan = require('./models/MembershipPlan');
 const Member = require('./models/Member');
 const Attendance = require('./models/Attendance');
-const Payment = require('./models/Payment');
 
 const seed = async () => {
   try {
@@ -17,7 +16,6 @@ const seed = async () => {
       MembershipPlan.deleteMany({}),
       Member.deleteMany({}),
       Attendance.deleteMany({}),
-      Payment.deleteMany({}),
     ]);
 
     await User.create({ name: 'Super Admin', email: 'super@gym.com', password: '123456', role: 'super_admin' });
@@ -46,11 +44,6 @@ const seed = async () => {
     await Attendance.create({ member: m1._id, gym: gym1._id });
     await Attendance.create({ member: m2._id, gym: gym1._id });
     await Attendance.create({ member: m5._id, gym: gym2._id });
-
-    await Payment.create({ member: m1._id, plan: monthly1._id, amount: 500, paymentMethod: 'cash', gym: gym1._id });
-    await Payment.create({ member: m2._id, plan: quarterly1._id, amount: 1200, paymentMethod: 'card', gym: gym1._id });
-    await Payment.create({ member: m3._id, plan: yearly1._id, amount: 4000, paymentMethod: 'transfer', gym: gym1._id });
-    await Payment.create({ member: m5._id, plan: monthly2._id, amount: 600, paymentMethod: 'cash', gym: gym2._id });
 
     console.log('Seed completed successfully!');
     console.log('---');

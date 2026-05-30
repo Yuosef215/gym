@@ -11,7 +11,6 @@ const Sidebar = () => {
     { to: '/members', label: 'Members', icon: '👥' },
     { to: '/plans', label: 'Plans', icon: '📋' },
     { to: '/attendance', label: 'Attendance', icon: '✅' },
-    { to: '/payments', label: 'Payments', icon: '💰' },
     ...(isAdmin ? [{ to: '/users', label: 'Users', icon: '🔐' }] : []),
     ...(isSuperAdmin ? [{ to: '/admin/gyms', label: 'Gyms', icon: '🏢' }] : []),
   ];

@@ -79,7 +79,6 @@ const AdminGyms = () => {
                     <div className="gym-stats">
                       <span title="Members">👥 {gym.stats?.members || 0}</span>
                       <span title="Plans">📋 {gym.stats?.plans || 0}</span>
-                      <span title="Payments">💰 {gym.stats?.payments || 0}</span>
                       <span title="Users">🔐 {gym.stats?.users || 0}</span>
                     </div>
                   </td>
