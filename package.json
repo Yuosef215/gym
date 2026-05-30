@@ -1,0 +1,18 @@
+{
+  "name": "gym-management",
+  "version": "1.0.0",
+  "description": "Full-Stack Gym Management System",
+  "private": true,
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "npx concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "seed": "cd backend && node seed.js",
+    "build": "cd backend && npm run build:frontend",
+    "start": "cd backend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
