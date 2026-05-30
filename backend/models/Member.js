@@ -10,6 +10,7 @@ const memberSchema = new mongoose.Schema({
   joinDate: { type: Date, default: Date.now },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
   notes: { type: String },
+  usedInvitations: { type: Number, default: 0 },
   membershipPlan: { type: mongoose.Schema.Types.ObjectId, ref: 'MembershipPlan' },
   gym: { type: mongoose.Schema.Types.ObjectId, ref: 'Gym', required: true },
 }, { timestamps: true });

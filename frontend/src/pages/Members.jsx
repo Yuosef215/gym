@@ -40,6 +40,16 @@ const Members = () => {
     }
   };
 
+  const handleUseInvitation = async (id) => {
+    try {
+      const res = await api.post(`/members/${id}/use-invitation`);
+      alert(res.data.message);
+      fetchMembers();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to use invitation');
+    }
+  };
+
   if (loading) return <div className="loading-screen"><div className="spinner"></div></div>;
 
   return (
@@ -69,6 +79,7 @@ const Members = () => {
               <th>Phone</th>
               <th>Email</th>
               <th>Plan</th>
+              <th>Invitations</th>
               <th>Status</th>
               <th>Join Date</th>
               <th>Actions</th>
@@ -76,7 +87,7 @@ const Members = () => {
           </thead>
           <tbody>
             {members.length === 0 ? (
-              <tr><td colSpan="7" className="empty">No members found</td></tr>
+              <tr><td colSpan="8" className="empty">No members found</td></tr>
             ) : (
               members.map((member) => (
                 <tr key={member._id}>
@@ -84,11 +95,30 @@ const Members = () => {
                   <td>{member.phone}</td>
                   <td>{member.email || '-'}</td>
                   <td>{member.membershipPlan?.name || '-'}</td>
+                  <td>
+                    {(() => {
+                      const total = member.membershipPlan?.invitations ?? 0;
+                      const used = member.usedInvitations ?? 0;
+                      const remaining = total - used;
+                      return total > 0 ? (
+                        <span className={`badge badge-${remaining > 0 ? 'active' : 'inactive'}`}>
+                          {used}/{total}
+                        </span>
+                      ) : '-';
+                    })()}
+                  </td>
                   <td><span className={`badge badge-${member.status}`}>{member.status}</span></td>
                   <td>{new Date(member.joinDate).toLocaleDateString()}</td>
                   <td className="actions">
                     <button onClick={() => navigate(`/members/edit/${member._id}`)} className="btn btn-sm btn-secondary">Edit</button>
                     <button onClick={() => handleDelete(member._id)} className="btn btn-sm btn-danger">Delete</button>
+                    {(() => {
+                      const total = member.membershipPlan?.invitations ?? 0;
+                      const used = member.usedInvitations ?? 0;
+                      return total > 0 && used < total ? (
+                        <button onClick={() => handleUseInvitation(member._id)} className="btn btn-sm btn-primary">+Invite</button>
+                      ) : null;
+                    })()}
                   </td>
                 </tr>
               ))

@@ -5,7 +5,7 @@ const Plans = () => {
   const [plans, setPlans] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editPlan, setEditPlan] = useState(null);
-  const [form, setForm] = useState({ name: '', description: '', durationDays: '', price: '' });
+  const [form, setForm] = useState({ name: '', description: '', durationDays: '', price: '', invitations: '' });
   const [loading, setLoading] = useState(true);
 
   const fetchPlans = async () => {
@@ -23,13 +23,13 @@ const Plans = () => {
 
   const openAdd = () => {
     setEditPlan(null);
-    setForm({ name: '', description: '', durationDays: '', price: '' });
+    setForm({ name: '', description: '', durationDays: '', price: '', invitations: '' });
     setShowModal(true);
   };
 
   const openEdit = (plan) => {
     setEditPlan(plan);
-    setForm({ name: plan.name, description: plan.description || '', durationDays: plan.durationDays, price: plan.price });
+    setForm({ name: plan.name, description: plan.description || '', durationDays: plan.durationDays, price: plan.price, invitations: plan.invitations ?? '' });
     setShowModal(true);
   };
 
@@ -87,6 +87,10 @@ const Plans = () => {
                 <span>Price</span>
                 <strong className="plan-price">{plan.price} EGP</strong>
               </div>
+              <div className="plan-detail">
+                <span>Invitations</span>
+                <strong>{(plan.invitations ?? 0)} invites</strong>
+              </div>
             </div>
           </div>
         ))}
@@ -114,6 +118,10 @@ const Plans = () => {
                   <label>Price (EGP) *</label>
                   <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} min="0" step="0.01" required />
                 </div>
+              </div>
+              <div className="form-group">
+                <label>Invitations included</label>
+                <input type="number" value={form.invitations} onChange={(e) => setForm({ ...form, invitations: e.target.value })} min="0" placeholder="0 = no invitations" />
               </div>
               <div className="form-actions">
                 <button type="submit" className="btn btn-primary">{editPlan ? 'Update' : 'Create'}</button>

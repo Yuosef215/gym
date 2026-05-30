@@ -27,12 +27,12 @@ const seed = async () => {
     await User.create({ name: 'Receptionist Fitness', email: 'receptionist@gym.com', password: '123456', role: 'receptionist', gym: gym1._id });
     await User.create({ name: 'Admin Power', email: 'admin@power.com', password: '123456', role: 'admin', gym: gym2._id });
 
-    const monthly1 = await MembershipPlan.create({ name: 'Monthly', description: '1 month full access', durationDays: 30, price: 500, gym: gym1._id });
-    const quarterly1 = await MembershipPlan.create({ name: 'Quarterly', description: '3 months full access', durationDays: 90, price: 1200, gym: gym1._id });
-    const yearly1 = await MembershipPlan.create({ name: 'Yearly', description: '12 months full access', durationDays: 365, price: 4000, gym: gym1._id });
+    const monthly1 = await MembershipPlan.create({ name: 'Monthly', description: '1 month full access', durationDays: 30, price: 500, invitations: 2, gym: gym1._id });
+    const quarterly1 = await MembershipPlan.create({ name: 'Quarterly', description: '3 months full access', durationDays: 90, price: 1200, invitations: 6, gym: gym1._id });
+    const yearly1 = await MembershipPlan.create({ name: 'Yearly', description: '12 months full access', durationDays: 365, price: 4000, invitations: 20, gym: gym1._id });
 
-    const monthly2 = await MembershipPlan.create({ name: 'Monthly', description: '1 month full access', durationDays: 30, price: 600, gym: gym2._id });
-    const yearly2 = await MembershipPlan.create({ name: 'Yearly', description: '12 months full access', durationDays: 365, price: 5000, gym: gym2._id });
+    const monthly2 = await MembershipPlan.create({ name: 'Monthly', description: '1 month full access', durationDays: 30, price: 600, invitations: 2, gym: gym2._id });
+    const yearly2 = await MembershipPlan.create({ name: 'Yearly', description: '12 months full access', durationDays: 365, price: 5000, invitations: 15, gym: gym2._id });
 
     const m1 = await Member.create({ name: 'Ahmed Ali', phone: '01001111111', email: 'ahmed@test.com', gender: 'male', membershipPlan: monthly1._id, gym: gym1._id });
     const m2 = await Member.create({ name: 'Sara Mohamed', phone: '01002222222', email: 'sara@test.com', gender: 'female', membershipPlan: quarterly1._id, gym: gym1._id });

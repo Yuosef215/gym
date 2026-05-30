@@ -5,6 +5,7 @@ const planSchema = new mongoose.Schema({
   description: { type: String },
   durationDays: { type: Number, required: true },
   price: { type: Number, required: true },
+  invitations: { type: Number, default: 0 },
   gym: { type: mongoose.Schema.Types.ObjectId, ref: 'Gym', required: true },
 }, { timestamps: true });
 

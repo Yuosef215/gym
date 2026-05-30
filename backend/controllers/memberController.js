@@ -56,3 +56,19 @@ exports.remove = async (req, res, next) => {
     res.json({ message: 'Member deleted' });
   } catch (err) { next(err); }
 };
+
+exports.useInvitation = async (req, res, next) => {
+  try {
+    const member = await Member.findOne({ _id: req.params.id, gym: req.user.gym._id }).populate('membershipPlan');
+    if (!member) return res.status(404).json({ message: 'Member not found' });
+    if (!member.membershipPlan) return res.status(400).json({ message: 'Member has no plan' });
+
+    const plan = member.membershipPlan;
+    const remaining = plan.invitations - member.usedInvitations;
+    if (remaining <= 0) return res.status(400).json({ message: 'No invitations remaining' });
+
+    member.usedInvitations += 1;
+    await member.save();
+    res.json({ message: 'Invitation used', remaining: remaining - 1 });
+  } catch (err) { next(err); }
+};

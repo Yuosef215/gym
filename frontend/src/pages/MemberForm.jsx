@@ -103,7 +103,7 @@ const MemberForm = () => {
               <label>Membership Plan</label>
               <select name="membershipPlan" value={form.membershipPlan} onChange={handleChange}>
                 <option value="">No Plan</option>
-                {plans.map((p) => <option key={p._id} value={p._id}>{p.name} - {p.price} EGP</option>)}
+                {plans.map((p) => <option key={p._id} value={p._id}>{p.name} - {p.price} EGP{(p.invitations ?? 0) > 0 ? ` (${p.invitations} invites)` : ''}</option>)}
               </select>
             </div>
           </div>

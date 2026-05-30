@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { body } = require('express-validator');
 const auth = require('../middleware/auth');
-const { getAll, getById, create, update, remove } = require('../controllers/memberController');
+const { getAll, getById, create, update, remove, useInvitation } = require('../controllers/memberController');
 
 router.use(auth);
 
@@ -15,5 +15,6 @@ router.post('/', [
 
 router.put('/:id', update);
 router.delete('/:id', remove);
+router.post('/:id/use-invitation', useInvitation);
 
 module.exports = router;
