@@ -7,7 +7,7 @@ const signToken = (user, gym) => {
   return jwt.sign(
     { id: user._id, name: user.name, email: user.email, role: user.role, gym: gym ? { _id: gym._id, name: gym.name } : null },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN }
+    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
 };
 
