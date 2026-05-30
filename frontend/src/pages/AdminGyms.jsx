@@ -43,7 +43,7 @@ const AdminGyms = () => {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>🏢 All Gyms</h1>
+        <h1>All Gyms</h1>
         <span className="badge badge-super_admin">Super Admin</span>
       </div>
 
@@ -77,9 +77,9 @@ const AdminGyms = () => {
                   </td>
                   <td>
                     <div className="gym-stats">
-                      <span title="Members">👥 {gym.stats?.members || 0}</span>
-                      <span title="Plans">📋 {gym.stats?.plans || 0}</span>
-                      <span title="Users">🔐 {gym.stats?.users || 0}</span>
+                      <span>Members: {gym.stats?.members || 0}</span>
+                      <span>Plans: {gym.stats?.plans || 0}</span>
+                      <span>Users: {gym.stats?.users || 0}</span>
                     </div>
                   </td>
                   <td>

@@ -43,9 +43,9 @@ const Dashboard = () => {
   if (loading) return <div className="loading-screen"><div className="spinner"></div></div>;
 
   const cards = [
-    { label: 'Total Members', value: stats.totalMembers, color: '#4f46e5', icon: '👥' },
-    { label: 'Active Members', value: stats.activeMembers, color: '#10b981', icon: '✅' },
-    { label: "Today's Attendance", value: stats.todayAttendance, color: '#f59e0b', icon: '📋' },
+    { label: 'Total Members', value: stats.totalMembers, color: '#4f46e5' },
+    { label: 'Active Members', value: stats.activeMembers, color: '#10b981' },
+    { label: "Today's Attendance", value: stats.todayAttendance, color: '#f59e0b' },
   ];
 
   return (
@@ -54,7 +54,6 @@ const Dashboard = () => {
       <div className="stats-grid">
         {cards.map((card) => (
           <div key={card.label} className="stat-card" style={{ borderLeftColor: card.color }}>
-            <div className="stat-icon">{card.icon}</div>
             <div className="stat-info">
               <span className="stat-label">{card.label}</span>
               <span className="stat-value">{card.value}</span>

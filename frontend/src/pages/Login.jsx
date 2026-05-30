@@ -26,7 +26,7 @@ const Login = () => {
     <div className="login-page">
       <div className="login-card">
         <div className="login-header">
-          <h1>🏋️ Gym Pro</h1>
+          <h1>Gym Pro</h1>
           <p>Multi-Gym Management System</p>
         </div>
         <form onSubmit={handleSubmit} className="login-form">
