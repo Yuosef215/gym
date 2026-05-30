@@ -20,7 +20,7 @@ exports.register = async (req, res, next) => {
     const existing = await User.findOne({ email });
     if (existing) return res.status(400).json({ message: 'Email already registered' });
 
-    const gym = await Gym.create({ name: gymName || `${name}'s Gym` });
+    const gym = await Gym.create({ name: gymName || `${name}'s Gym`, active: false });
     const user = await User.create({ name, email, password, role: 'admin', gym: gym._id });
 
     const token = signToken(user, gym);
@@ -45,7 +45,7 @@ exports.login = async (req, res, next) => {
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
     if (user.role !== 'super_admin' && user.gym && !user.gym.active) {
-      return res.status(403).json({ message: 'Your gym account is deactivated. Contact super admin.' });
+      return res.status(403).json({ message: 'Your gym is not activated yet. Please contact us at youssef.alaa.dev@gmail.com or 01006109902 to activate it.' });
     }
 
     const token = signToken(user, user.gym);
