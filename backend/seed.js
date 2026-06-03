@@ -34,9 +34,12 @@ const seed = async () => {
     const monthly2 = await MembershipPlan.create({ name: 'Monthly', description: '1 month full access', durationDays: 30, price: 600, invitations: 2, gym: gym2._id });
     const yearly2 = await MembershipPlan.create({ name: 'Yearly', description: '12 months full access', durationDays: 365, price: 5000, invitations: 15, gym: gym2._id });
 
-    const m1 = await Member.create({ name: 'Ahmed Ali', phone: '01001111111', email: 'ahmed@test.com', gender: 'male', membershipPlan: monthly1._id, gym: gym1._id });
-    const m2 = await Member.create({ name: 'Sara Mohamed', phone: '01002222222', email: 'sara@test.com', gender: 'female', membershipPlan: quarterly1._id, gym: gym1._id });
-    const m3 = await Member.create({ name: 'Omar Hassan', phone: '01003333333', email: 'omar@test.com', gender: 'male', membershipPlan: yearly1._id, gym: gym1._id });
+    const today = new Date();
+    const daysAgo = (d) => new Date(today.getTime() - d * 24 * 60 * 60 * 1000);
+
+    const m1 = await Member.create({ name: 'Ahmed Ali', phone: '01001111111', email: 'ahmed@test.com', gender: 'male', membershipPlan: monthly1._id, membershipStartDate: daysAgo(28), dateOfBirth: new Date(today.getFullYear(), today.getMonth(), today.getDate()), gym: gym1._id });
+    const m2 = await Member.create({ name: 'Sara Mohamed', phone: '01002222222', email: 'sara@test.com', gender: 'female', membershipPlan: quarterly1._id, membershipStartDate: daysAgo(85), gym: gym1._id });
+    const m3 = await Member.create({ name: 'Omar Hassan', phone: '01003333333', email: 'omar@test.com', gender: 'male', membershipPlan: yearly1._id, membershipStartDate: daysAgo(360), gym: gym1._id });
     const m4 = await Member.create({ name: 'Nora Khaled', phone: '01004444444', email: 'nora@test.com', gender: 'female', membershipPlan: monthly1._id, status: 'inactive', gym: gym1._id });
 
     const m5 = await Member.create({ name: 'Khaled Youssef', phone: '01005555555', email: 'khaled@test.com', gender: 'male', membershipPlan: monthly2._id, gym: gym2._id });

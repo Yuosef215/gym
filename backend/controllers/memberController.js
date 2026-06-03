@@ -57,6 +57,58 @@ exports.remove = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+exports.getExpiring = async (req, res, next) => {
+  try {
+    const days = parseInt(req.query.days) || 7;
+    const members = await Member.find({ gym: req.user.gym._id, status: 'active' })
+      .populate('membershipPlan');
+
+    const now = new Date();
+    const future = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+    const expiring = [];
+
+    for (const m of members) {
+      if (!m.membershipPlan) continue;
+      const start = m.membershipStartDate || m.joinDate;
+      const end = new Date(start.getTime() + m.membershipPlan.durationDays * 24 * 60 * 60 * 1000);
+      if (end >= now && end <= future) {
+        expiring.push({
+          ...m.toJSON(),
+          membershipEndDate: end,
+          daysRemaining: Math.ceil((end - now) / (1000 * 60 * 60 * 24)),
+        });
+      }
+    }
+
+    expiring.sort((a, b) => a.daysRemaining - b.daysRemaining);
+    res.json(expiring);
+  } catch (err) { next(err); }
+};
+
+exports.getBirthdays = async (req, res, next) => {
+  try {
+    const members = await Member.find({
+      gym: req.user.gym._id,
+      dateOfBirth: { $exists: true, $ne: null },
+    }).populate('membershipPlan');
+
+    const now = new Date();
+    const todayMonth = now.getMonth() + 1;
+    const todayDay = now.getDate();
+
+    const birthdays = [];
+    for (const m of members) {
+      if (!m.dateOfBirth) continue;
+      const bd = new Date(m.dateOfBirth);
+      if (bd.getMonth() + 1 === todayMonth && bd.getDate() === todayDay) {
+        birthdays.push(m);
+      }
+    }
+
+    res.json(birthdays);
+  } catch (err) { next(err); }
+};
+
 exports.useInvitation = async (req, res, next) => {
   try {
     const member = await Member.findOne({ _id: req.params.id, gym: req.user.gym._id }).populate('membershipPlan');

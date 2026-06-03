@@ -1,11 +1,13 @@
 const router = require('express').Router();
 const { body } = require('express-validator');
 const auth = require('../middleware/auth');
-const { getAll, getById, create, update, remove, useInvitation } = require('../controllers/memberController');
+const { getAll, getById, create, update, remove, useInvitation, getExpiring, getBirthdays } = require('../controllers/memberController');
 
 router.use(auth);
 
 router.get('/', getAll);
+router.get('/expiring', getExpiring);
+router.get('/birthdays', getBirthdays);
 router.get('/:id', getById);
 
 router.post('/', [

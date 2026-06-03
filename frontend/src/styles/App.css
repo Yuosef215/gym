@@ -146,6 +146,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 /* SIDEBAR */
 .gym-badge { display: block; font-size: 11px; color: var(--text-dim); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
 
+/* ALERT CARDS (birthdays & expiring) */
+.alert-card { border-radius: var(--radius); padding: 16px 20px; margin-bottom: 16px; border: 1px solid; }
+.alert-birthday { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3); }
+.alert-expiring { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); }
+.alert-card-header { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.alert-birthday .alert-card-header { color: #fcd34d; }
+.alert-expiring .alert-card-header { color: #fca5a5; }
+.alert-card-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+.alert-card-item:first-of-type { border-top: none; }
+.alert-card-name { font-weight: 500; font-size: 14px; }
+.alert-card-info { font-size: 13px; color: var(--text-muted); }
+
 /* ADMIN GYMS */
 .gym-stats { display: flex; gap: 12px; font-size: 13px; }
 .gym-stats span { white-space: nowrap; }

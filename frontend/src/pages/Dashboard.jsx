@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import { MembersBarChart } from '../components/Charts/DashboardCharts';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({ totalMembers: 0, activeMembers: 0, todayAttendance: 0 });
   const [planData, setPlanData] = useState([]);
+  const [expiring, setExpiring] = useState([]);
+  const [birthdays, setBirthdays] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [membersRes, attendanceRes, plansRes] = await Promise.all([
+        const [membersRes, attendanceRes, plansRes, expiringRes, birthdaysRes] = await Promise.all([
           api.get('/members'),
           api.get('/attendance/today'),
           api.get('/plans'),
+          api.get('/members/expiring?days=7'),
+          api.get('/members/birthdays'),
         ]);
 
         const members = membersRes.data;
@@ -25,6 +30,9 @@ const Dashboard = () => {
           activeMembers: members.filter((m) => m.status === 'active').length,
           todayAttendance: attendance.length,
         });
+
+        setExpiring(expiringRes.data);
+        setBirthdays(birthdaysRes.data);
 
         const planCounts = plans.map((plan) => ({
           name: plan.name,
@@ -51,6 +59,31 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <h1>Dashboard</h1>
+
+      {birthdays.length > 0 && (
+        <div className="alert-card alert-birthday">
+          <div className="alert-card-header">Birthday</div>
+          {birthdays.map((m) => (
+            <div key={m._id} className="alert-card-item">
+              <span className="alert-card-name">{m.name}</span>
+              <span className="alert-card-info">{m.phone}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {expiring.length > 0 && (
+        <div className="alert-card alert-expiring">
+          <div className="alert-card-header">Expiring Memberships (next 7 days)</div>
+          {expiring.map((m) => (
+            <div key={m._id} className="alert-card-item">
+              <span className="alert-card-name">{m.name}</span>
+              <span className="alert-card-info">{m.membershipPlan?.name} - {m.daysRemaining} day{m.daysRemaining > 1 ? 's' : ''} left</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className="stats-grid">
         {cards.map((card) => (
           <div key={card.label} className="stat-card" style={{ borderLeftColor: card.color }}>

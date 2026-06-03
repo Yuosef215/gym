@@ -8,6 +8,7 @@ const memberSchema = new mongoose.Schema({
   gender: { type: String, enum: ['male', 'female', 'other'] },
   dateOfBirth: { type: Date },
   joinDate: { type: Date, default: Date.now },
+  membershipStartDate: { type: Date, default: Date.now },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
   notes: { type: String },
   usedInvitations: { type: Number, default: 0 },
