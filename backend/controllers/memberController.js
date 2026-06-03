@@ -59,6 +59,7 @@ exports.remove = async (req, res, next) => {
 
 exports.getExpiring = async (req, res, next) => {
   try {
+    if (!req.user.gym) return res.json([]);
     const days = parseInt(req.query.days) || 7;
     const members = await Member.find({ gym: req.user.gym._id, status: 'active' })
       .populate('membershipPlan');
@@ -69,11 +70,14 @@ exports.getExpiring = async (req, res, next) => {
 
     for (const m of members) {
       if (!m.membershipPlan) continue;
-      const start = m.membershipStartDate || m.joinDate;
+      const start = m.membershipStartDate || m.joinDate || now;
+      if (!start) continue;
       const end = new Date(start.getTime() + m.membershipPlan.durationDays * 24 * 60 * 60 * 1000);
       if (end >= now && end <= future) {
         expiring.push({
-          ...m.toJSON(),
+          _id: m._id, name: m.name, phone: m.phone, email: m.email,
+          gender: m.gender, dateOfBirth: m.dateOfBirth, status: m.status,
+          usedInvitations: m.usedInvitations, membershipPlan: m.membershipPlan,
           membershipEndDate: end,
           daysRemaining: Math.ceil((end - now) / (1000 * 60 * 60 * 24)),
         });
@@ -87,6 +91,7 @@ exports.getExpiring = async (req, res, next) => {
 
 exports.getBirthdays = async (req, res, next) => {
   try {
+    if (!req.user.gym) return res.json([]);
     const members = await Member.find({
       gym: req.user.gym._id,
       dateOfBirth: { $exists: true, $ne: null },
@@ -101,7 +106,7 @@ exports.getBirthdays = async (req, res, next) => {
       if (!m.dateOfBirth) continue;
       const bd = new Date(m.dateOfBirth);
       if (bd.getMonth() + 1 === todayMonth && bd.getDate() === todayDay) {
-        birthdays.push(m);
+        birthdays.push({ _id: m._id, name: m.name, phone: m.phone, membershipPlan: m.membershipPlan });
       }
     }
 
