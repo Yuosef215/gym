@@ -11,6 +11,7 @@ const Sidebar = () => {
     { to: '/members', label: 'Members' },
     { to: '/plans', label: 'Plans' },
     { to: '/attendance', label: 'Attendance' },
+    { to: '/expiring', label: 'Expiring' },
     ...(isAdmin ? [{ to: '/users', label: 'Users' }] : []),
     ...(isSuperAdmin ? [{ to: '/admin/gyms', label: 'Gyms' }] : []),
   ];

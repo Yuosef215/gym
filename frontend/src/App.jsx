@@ -9,6 +9,7 @@ import Members from './pages/Members';
 import MemberForm from './pages/MemberForm';
 import Plans from './pages/Plans';
 import Attendance from './pages/Attendance';
+import Expiring from './pages/Expiring';
 import Users from './pages/Users';
 import AdminGyms from './pages/AdminGyms';
 
@@ -28,6 +29,7 @@ const App = () => {
         <Route path="members/edit/:id" element={<MemberForm />} />
         <Route path="plans" element={<Plans />} />
         <Route path="attendance" element={<Attendance />} />
+        <Route path="expiring" element={<Expiring />} />
         <Route path="users" element={<Users />} />
         <Route path="admin/gyms" element={<AdminGyms />} />
       </Route>
