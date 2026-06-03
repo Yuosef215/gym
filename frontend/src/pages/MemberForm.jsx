@@ -9,7 +9,7 @@ const MemberForm = () => {
 
   const [form, setForm] = useState({
     name: '', email: '', phone: '', address: '', gender: 'male',
-    dateOfBirth: '', membershipPlan: '', notes: '',
+    dateOfBirth: '', membershipStartDate: '', membershipPlan: '', notes: '',
   });
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -26,6 +26,7 @@ const MemberForm = () => {
           setForm({
             name: m.name, email: m.email || '', phone: m.phone, address: m.address || '',
             gender: m.gender || 'male', dateOfBirth: m.dateOfBirth || '',
+            membershipStartDate: m.membershipStartDate ? m.membershipStartDate.split('T')[0] : '',
             membershipPlan: m.membershipPlan?._id || '', notes: m.notes || '',
           });
         }
@@ -99,6 +100,12 @@ const MemberForm = () => {
               <label>Date of Birth</label>
               <input name="dateOfBirth" type="date" value={form.dateOfBirth} onChange={handleChange} />
             </div>
+            <div className="form-group">
+              <label>Membership Start Date</label>
+              <input name="membershipStartDate" type="date" value={form.membershipStartDate} onChange={handleChange} />
+            </div>
+          </div>
+          <div className="form-row">
             <div className="form-group">
               <label>Membership Plan</label>
               <select name="membershipPlan" value={form.membershipPlan} onChange={handleChange}>
