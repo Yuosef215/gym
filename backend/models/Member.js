@@ -12,6 +12,8 @@ const memberSchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
   notes: { type: String },
   usedInvitations: { type: Number, default: 0 },
+  qrData: { type: String },
+  qrCode: { type: String },
   membershipPlan: { type: mongoose.Schema.Types.ObjectId, ref: 'MembershipPlan' },
   gym: { type: mongoose.Schema.Types.ObjectId, ref: 'Gym', required: true },
 }, { timestamps: true });

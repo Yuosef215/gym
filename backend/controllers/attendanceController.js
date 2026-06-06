@@ -1,5 +1,6 @@
 const Attendance = require('../models/Attendance');
 const Member = require('../models/Member');
+const qrService = require('../services/qrService');
 
 exports.getAll = async (req, res, next) => {
   try {
@@ -44,6 +45,29 @@ exports.checkOut = async (req, res, next) => {
     await record.save();
     const result = await Attendance.findById(record._id).populate('member', 'name phone');
     res.json(result);
+  } catch (err) { next(err); }
+};
+
+exports.scanQR = async (req, res, next) => {
+  try {
+    const { qrData } = req.body;
+    if (!qrData) return res.status(400).json({ message: 'qrData is required' });
+
+    const payload = qrService.verifyQRPayload(qrData);
+    if (!payload) return res.status(400).json({ message: 'Invalid or expired QR code' });
+
+    const member = await Member.findOne({ _id: payload.memberId, gym: req.user.gym._id });
+    if (!member) return res.status(404).json({ message: 'Member not found' });
+
+    const today = new Date().toISOString().split('T')[0];
+    const existing = await Attendance.findOne({
+      member: payload.memberId, date: today, checkOut: null, gym: req.user.gym._id,
+    });
+    if (existing) return res.status(400).json({ message: 'Member already checked in today' });
+
+    const record = await Attendance.create({ member: payload.memberId, gym: req.user.gym._id });
+    const result = await Attendance.findById(record._id).populate('member', 'name phone');
+    res.status(201).json(result);
   } catch (err) { next(err); }
 };
 

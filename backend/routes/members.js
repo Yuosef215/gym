@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { body } = require('express-validator');
 const auth = require('../middleware/auth');
-const { getAll, getById, create, update, remove, useInvitation, getExpiring, getBirthdays } = require('../controllers/memberController');
+const { getAll, getById, create, update, remove, generateQR, useInvitation, getExpiring, getBirthdays } = require('../controllers/memberController');
 
 router.use(auth);
 
@@ -18,5 +18,6 @@ router.post('/', [
 router.put('/:id', update);
 router.delete('/:id', remove);
 router.post('/:id/use-invitation', useInvitation);
+router.post('/:id/generate-qr', generateQR);
 
 module.exports = router;

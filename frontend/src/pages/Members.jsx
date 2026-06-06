@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
+import QRModal from '../components/Modals/QRModal';
 
 const Members = () => {
   const [members, setMembers] = useState([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [loading, setLoading] = useState(true);
+  const [qrMember, setQrMember] = useState(null);
   const navigate = useNavigate();
 
   const fetchMembers = async () => {
@@ -112,6 +114,7 @@ const Members = () => {
                   <td className="actions">
                     <button onClick={() => navigate(`/members/edit/${member._id}`)} className="btn btn-sm btn-secondary">Edit</button>
                     <button onClick={() => handleDelete(member._id)} className="btn btn-sm btn-danger">Delete</button>
+                    <button onClick={() => setQrMember(member)} className="btn btn-sm btn-secondary">QR</button>
                     {(() => {
                       const total = member.membershipPlan?.invitations ?? 0;
                       const used = member.usedInvitations ?? 0;
@@ -126,6 +129,7 @@ const Members = () => {
           </tbody>
         </table>
       </div>
+      {qrMember && <QRModal member={qrMember} onClose={() => setQrMember(null)} />}
     </div>
   );
 };

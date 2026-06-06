@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const Member = require('../models/Member');
+const qrService = require('../services/qrService');
 
 exports.getAll = async (req, res, next) => {
   try {
@@ -111,6 +112,22 @@ exports.getBirthdays = async (req, res, next) => {
     }
 
     res.json(birthdays);
+  } catch (err) { next(err); }
+};
+
+exports.generateQR = async (req, res, next) => {
+  try {
+    const member = await Member.findOne({ _id: req.params.id, gym: req.user.gym._id });
+    if (!member) return res.status(404).json({ message: 'Member not found' });
+
+    const qrString = qrService.generateQRPayload(member._id.toString(), req.user.gym._id);
+    const qrCode = await qrService.generateQRImage(qrString);
+
+    member.qrData = qrString;
+    member.qrCode = qrCode;
+    await member.save();
+
+    res.json({ qrCode, qrData: qrString });
   } catch (err) { next(err); }
 };
 
