@@ -14,6 +14,7 @@ const Sidebar = () => {
     { to: '/scan-qr', label: 'QR Scan' },
     { to: '/expiring', label: 'Expiring' },
     ...(isAdmin ? [{ to: '/reports', label: 'Reports' }] : []),
+    ...(isAdmin ? [{ to: '/notifications', label: 'Notifications' }] : []),
     ...(isAdmin ? [{ to: '/users', label: 'Users' }] : []),
     ...(isSuperAdmin ? [{ to: '/admin/gyms', label: 'Gyms' }] : []),
   ];

@@ -12,6 +12,7 @@ import Attendance from './pages/Attendance';
 import Expiring from './pages/Expiring';
 import ScanQR from './pages/ScanQR';
 import Reports from './pages/Reports';
+import Notifications from './pages/Notifications';
 import Users from './pages/Users';
 import AdminGyms from './pages/AdminGyms';
 
@@ -34,6 +35,7 @@ const App = () => {
         <Route path="scan-qr" element={<ScanQR />} />
         <Route path="expiring" element={<Expiring />} />
         <Route path="reports" element={<Reports />} />
+        <Route path="notifications" element={<Notifications />} />
         <Route path="users" element={<Users />} />
         <Route path="admin/gyms" element={<AdminGyms />} />
       </Route>
