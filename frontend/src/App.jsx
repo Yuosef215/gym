@@ -10,6 +10,7 @@ import MemberForm from './pages/MemberForm';
 import Plans from './pages/Plans';
 import Attendance from './pages/Attendance';
 import Expiring from './pages/Expiring';
+import Reports from './pages/Reports';
 import Users from './pages/Users';
 import AdminGyms from './pages/AdminGyms';
 
@@ -30,6 +31,7 @@ const App = () => {
         <Route path="plans" element={<Plans />} />
         <Route path="attendance" element={<Attendance />} />
         <Route path="expiring" element={<Expiring />} />
+        <Route path="reports" element={<Reports />} />
         <Route path="users" element={<Users />} />
         <Route path="admin/gyms" element={<AdminGyms />} />
       </Route>

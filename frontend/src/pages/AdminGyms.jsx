@@ -79,6 +79,7 @@ const AdminGyms = () => {
                     <div className="gym-stats">
                       <span>Members: {gym.stats?.members || 0}</span>
                       <span>Plans: {gym.stats?.plans || 0}</span>
+                      <span>Payments: {gym.stats?.payments || 0}</span>
                       <span>Users: {gym.stats?.users || 0}</span>
                     </div>
                   </td>

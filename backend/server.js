@@ -10,7 +10,7 @@ const adminRoutes = require('./routes/admin');
 const memberRoutes = require('./routes/members');
 const planRoutes = require('./routes/plans');
 const attendanceRoutes = require('./routes/attendance');
-
+const paymentRoutes = require('./routes/payments');
 const userRoutes = require('./routes/users');
 
 const app = express();
@@ -27,7 +27,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/attendance', attendanceRoutes);
-
+app.use('/api/payments', paymentRoutes);
 app.use('/api/users', userRoutes);
 
 if (isProduction) {

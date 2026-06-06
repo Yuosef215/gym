@@ -5,6 +5,7 @@ const User = require('../models/User');
 const Member = require('../models/Member');
 const MembershipPlan = require('../models/MembershipPlan');
 const Attendance = require('../models/Attendance');
+const Payment = require('../models/Payment');
 
 router.use(auth);
 
@@ -13,12 +14,13 @@ router.get('/gyms', async (req, res, next) => {
     if (req.user.role !== 'super_admin') return res.status(403).json({ message: 'Forbidden' });
     const gyms = await Gym.find().sort({ createdAt: -1 });
     const result = await Promise.all(gyms.map(async (gym) => {
-      const [members, plans, users] = await Promise.all([
+      const [members, plans, payments, users] = await Promise.all([
         Member.countDocuments({ gym: gym._id }),
         MembershipPlan.countDocuments({ gym: gym._id }),
+        Payment.countDocuments({ gym: gym._id }),
         User.countDocuments({ gym: gym._id }),
       ]);
-      return { ...gym.toJSON(), stats: { members, plans, users } };
+      return { ...gym.toJSON(), stats: { members, plans, payments, users } };
     }));
     res.json(result);
   } catch (err) { next(err); }
@@ -53,6 +55,7 @@ router.delete('/gyms/:id', async (req, res, next) => {
       Member.deleteMany({ gym: req.params.id }),
       MembershipPlan.deleteMany({ gym: req.params.id }),
       Attendance.deleteMany({ gym: req.params.id }),
+      Payment.deleteMany({ gym: req.params.id }),
     ]);
     res.json({ message: 'Gym and all related data deleted' });
   } catch (err) { next(err); }
