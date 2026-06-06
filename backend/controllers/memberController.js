@@ -1,5 +1,7 @@
 const { validationResult } = require('express-validator');
 const Member = require('../models/Member');
+const Payment = require('../models/Payment');
+const MembershipPlan = require('../models/MembershipPlan');
 const qrService = require('../services/qrService');
 
 exports.getAll = async (req, res, next) => {
@@ -33,6 +35,35 @@ exports.create = async (req, res, next) => {
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     const member = await Member.create({ ...req.body, gym: req.user.gym._id });
+
+    if (req.body.membershipPlan) {
+      const plan = await MembershipPlan.findById(req.body.membershipPlan);
+      if (plan) {
+        const start = member.membershipStartDate || new Date();
+        const end = new Date(start.getTime() + plan.durationDays * 86400000);
+        const amount = req.body.paymentAmount || plan.price;
+        const discount = req.body.paymentDiscount || 0;
+
+        await Payment.create({
+          member: member._id,
+          plan: plan._id,
+          gym: req.user.gym._id,
+          amount,
+          discount,
+          total: amount - discount,
+          type: 'new',
+          method: req.body.paymentMethod || 'cash',
+          status: 'paid',
+          paidDate: new Date(),
+          dueDate: end,
+          periodStart: start,
+          periodEnd: end,
+          notes: req.body.paymentNotes || 'Initial payment on member creation',
+          createdBy: req.user._id,
+        });
+      }
+    }
+
     const result = await Member.findById(member._id).populate('membershipPlan');
     res.status(201).json(result);
   } catch (err) { next(err); }

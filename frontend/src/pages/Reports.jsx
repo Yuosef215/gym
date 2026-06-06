@@ -14,6 +14,9 @@ const Reports = () => {
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [monthYear, setMonthYear] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`);
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [members, setMembers] = useState([]);
+  const [paymentForm, setPaymentForm] = useState({ memberId: '', amount: 0, discount: 0, method: 'cash', notes: '' });
 
   const fetchData = async () => {
     setLoading(true);
@@ -35,6 +38,35 @@ const Reports = () => {
   };
 
   useEffect(() => { fetchData(); }, [date, monthYear]);
+
+  const searchMembers = async (q) => {
+    if (!q) { setMembers([]); return; }
+    try {
+      const res = await api.get(`/members?search=${q}`);
+      setMembers(res.data.slice(0, 10));
+    } catch (err) { console.error(err); }
+  };
+
+  const handleRecordPayment = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post('/payments', {
+        member: paymentForm.memberId,
+        amount: Number(paymentForm.amount),
+        discount: Number(paymentForm.discount),
+        total: Number(paymentForm.amount) - Number(paymentForm.discount),
+        method: paymentForm.method,
+        type: 'new',
+        status: 'paid',
+        notes: paymentForm.notes || undefined,
+      });
+      alert('Payment recorded successfully');
+      setShowPaymentForm(false);
+      fetchData();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to record payment');
+    }
+  };
 
   const fetchYearly = async (year) => {
     const res = await api.get(`/payments/yearly?year=${year}`);
@@ -61,7 +93,67 @@ const Reports = () => {
     <div className="page">
       <div className="page-header">
         <h1>Financial Reports</h1>
+        <button className="btn btn-primary" onClick={() => setShowPaymentForm(true)}>Record Payment</button>
       </div>
+
+      {showPaymentForm && (
+        <div className="modal-overlay" onClick={() => setShowPaymentForm(false)}>
+          <div className="modal-content" style={{ maxWidth: 500 }} onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowPaymentForm(false)}>&times;</button>
+            <h2>Record Payment</h2>
+            <form onSubmit={handleRecordPayment} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div className="form-group">
+                <label>Search Member</label>
+                <input type="text" placeholder="Type name or phone..." onChange={(e) => searchMembers(e.target.value)} className="form-input" />
+                {members.length > 0 && (
+                  <div style={{ marginTop: 4, background: '#1e293b', borderRadius: 6, maxHeight: 200, overflowY: 'auto' }}>
+                    {members.map((m) => (
+                      <div key={m._id} onClick={() => { setPaymentForm({ ...paymentForm, memberId: m._id, amount: m.membershipPlan?.price || 0 }); setMembers([]); }}
+                        style={{ padding: '8px 12px', cursor: 'pointer', borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between' }}>
+                        <span>{m.name}</span>
+                        <span style={{ color: '#94a3b8' }}>{m.phone} - {m.membershipPlan?.name || 'No plan'}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {paymentForm.memberId && (
+                <>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Amount (EGP)</label>
+                      <input type="number" value={paymentForm.amount} onChange={(e) => setPaymentForm({ ...paymentForm, amount: e.target.value })} className="form-input" required />
+                    </div>
+                    <div className="form-group">
+                      <label>Discount</label>
+                      <input type="number" value={paymentForm.discount} onChange={(e) => setPaymentForm({ ...paymentForm, discount: e.target.value })} className="form-input" min="0" />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Method</label>
+                      <select value={paymentForm.method} onChange={(e) => setPaymentForm({ ...paymentForm, method: e.target.value })} className="form-input">
+                        <option value="cash">Cash</option>
+                        <option value="card">Card</option>
+                        <option value="transfer">Transfer</option>
+                        <option value="wallet">Wallet</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Total: <strong>{Number(paymentForm.amount) - Number(paymentForm.discount)} EGP</strong></label>
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>Notes</label>
+                    <input type="text" value={paymentForm.notes} onChange={(e) => setPaymentForm({ ...paymentForm, notes: e.target.value })} className="form-input" placeholder="Optional" />
+                  </div>
+                  <button type="submit" className="btn btn-primary">Record Payment</button>
+                </>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="tabs" style={{ display: 'flex', gap: 4, marginBottom: 24, background: 'var(--bg-card)', borderRadius: 'var(--radius)', padding: 4 }}>
         {tabs.map((t) => (

@@ -10,6 +10,7 @@ const MemberForm = () => {
   const [form, setForm] = useState({
     name: '', email: '', phone: '', address: '', gender: 'male',
     dateOfBirth: '', membershipStartDate: '', membershipPlan: '', notes: '',
+    paymentMethod: 'cash', paymentDiscount: 0, paymentAmount: 0, paymentNotes: '',
   });
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -30,14 +31,22 @@ const MemberForm = () => {
             membershipPlan: m.membershipPlan?._id || '', notes: m.notes || '',
           });
         }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setFetchLoading(false);
-      }
+      } catch (err) { console.error(err); }
+      finally { setFetchLoading(false); }
     };
     init();
   }, [id]);
+
+  const handlePlanChange = (e) => {
+    const planId = e.target.value;
+    const plan = plans.find(p => p._id === planId);
+    setForm({
+      ...form,
+      membershipPlan: planId,
+      paymentAmount: plan ? plan.price : 0,
+      paymentDiscount: 0,
+    });
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -108,7 +117,7 @@ const MemberForm = () => {
           <div className="form-row">
             <div className="form-group">
               <label>Membership Plan</label>
-              <select name="membershipPlan" value={form.membershipPlan} onChange={handleChange}>
+              <select name="membershipPlan" value={form.membershipPlan} onChange={handlePlanChange}>
                 <option value="">No Plan</option>
                 {plans.map((p) => <option key={p._id} value={p._id}>{p.name} - {p.price} EGP{(p.invitations ?? 0) > 0 ? ` (${p.invitations} invites)` : ''}</option>)}
               </select>
@@ -122,6 +131,40 @@ const MemberForm = () => {
             <label>Notes</label>
             <textarea name="notes" value={form.notes} onChange={handleChange} rows="2"></textarea>
           </div>
+
+          {!isEdit && form.membershipPlan && (
+            <>
+              <h3 style={{ marginTop: 16, marginBottom: 8, color: '#e2e8f0' }}>Payment</h3>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Amount (EGP)</label>
+                  <input name="paymentAmount" type="number" value={form.paymentAmount} onChange={handleChange} />
+                </div>
+                <div className="form-group">
+                  <label>Discount (EGP)</label>
+                  <input name="paymentDiscount" type="number" value={form.paymentDiscount} onChange={handleChange} min="0" />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Payment Method</label>
+                  <select name="paymentMethod" value={form.paymentMethod} onChange={handleChange}>
+                    <option value="cash">Cash</option>
+                    <option value="card">Card</option>
+                    <option value="transfer">Transfer</option>
+                    <option value="wallet">Wallet</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Total: <strong>{form.paymentAmount - form.paymentDiscount} EGP</strong></label>
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Payment Notes</label>
+                <input name="paymentNotes" value={form.paymentNotes} onChange={handleChange} placeholder="Optional notes" />
+              </div>
+            </>
+          )}
           <div className="form-actions">
             <button type="submit" className="btn btn-primary" disabled={loading}>
               {loading ? 'Saving...' : (isEdit ? 'Update Member' : 'Add Member')}
